@@ -1,0 +1,60 @@
+# 🧠 Asynchronous FIFO Design and Verification – Milestone 3
+
+This milestone integrates all components into a complete **Asynchronous FIFO System**, capable of safely transferring data between two clock domains using Gray-coded pointers and status flags.
+
+## 📦 Modules Implemented
+
+### 1. ✅ `async_fifo.v`
+- Top-level FIFO wrapper
+- Instantiates:
+  - `dual_port_ram` (dual clock)
+  - `write_pointer` and `read_pointer` (Gray code based)
+  - `gray_sync` modules (cross-domain pointer synchronizers)
+- Manages `full` and `empty` flags accurately
+
+### 2. ✅ `dual_port_ram.v`
+- Dual-port memory for concurrent read/write access from independent clocks
+
+### 3. ✅ `write_pointer.v` & `read_pointer.v`
+- Gray-code based pointer increment and full/empty flag logic
+
+### 4. ✅ `gray_sync.v`
+- Cross-domain synchronizer for safe pointer transfer
+
+## 🧪 Testbench
+
+### ✅ `tb_async_fifo.v`
+Simulates complete FIFO behavior across dual clock domains with tests for:
+
+- **Write operations** until `full`
+- **Read operations** until `empty`
+- **Full flag prevention test** (no overflow)
+- **Empty flag prevention test** (no underflow)
+## 🗂 Project Structure
+
+async-fifo/
+├── src/
+│ ├── async_fifo.v # Top-level wrapper module
+│ ├── dual_port_ram.v # Dual-port RAM
+│ ├── write_pointer.v # Gray-coded write logic
+│ ├── read_pointer.v # Gray-coded read logic
+│ └── gray_sync.v # Cross-domain synchronizer
+├── tb/
+│ └── tb_async_fifo.v # Full system testbench
+├── README.md
+└── .gitignore
+
+
+## ▶️ How to Run (Using Icarus Verilog)
+
+```bash
+# Compile and simulate full FIFO system
+iverilog -o fifo_test \
+    tb/tb_async_fifo.v \
+    src/async_fifo.v \
+    src/dual_port_ram.v \
+    src/write_pointer.v \
+    src/read_pointer.v \
+    src/gray_sync.v
+
+vvp fifo_test
