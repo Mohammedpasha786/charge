@@ -1,0 +1,61 @@
+# 🚀 Asynchronous FIFO Design and Verification – Milestone 2
+
+This milestone focuses on implementing **Gray-coded read/write pointers** and generating **accurate full and empty status flags** for an asynchronous FIFO system. It also includes synchronization between clock domains.
+
+
+## 🧩 Modules Implemented
+
+### 1. 🟦 `write_pointer.v`
+- Increments write pointer using Gray code
+- Generates **`full` flag** by comparing write and synchronized read pointer
+- Handles pointer wrapping using MSB comparison
+
+### 2. 🟩 `read_pointer.v`
+- Increments read pointer using Gray code
+- Generates **`empty` flag** by comparing read and synchronized write pointer
+- Handles empty status across clock boundaries
+
+### 3. 🔄 `gray_sync.v`
+- A **2 flip-flop synchronizer** module used for transferring Gray-coded pointers between asynchronous domains safely
+
+## 🧪 Testbenches
+
+### ✅ `tb_write_pointer.v`
+- Validates pointer incrementing logic on write clock
+- Checks **`full` flag** assertion and deassertion
+- Verifies MSB-based pointer wrapping
+
+### ✅ `tb_read_pointer.v`
+- Validates pointer incrementing logic on read clock
+- Checks **`empty` flag** assertion and deassertion
+- Verifies synchronization of write pointer into read domain
+
+## 📁 Project Structure
+
+async-fifo/
+├── src/
+│ ├── write_pointer.v # Gray-coded write pointer + full flag logic
+│ ├── read_pointer.v # Gray-coded read pointer + empty flag logic
+│ ├── gray_sync.v # 2-flip-flop synchronizer module
+├── tb/
+│ ├── tb_write_pointer.v # Write pointer behavior test
+│ ├── tb_read_pointer.v # Read pointer behavior test
+├── README.md
+└── .gitignore
+
+## ⚙️ How It Works
+
+- Both read and write pointers are stored in **Gray code** to minimize errors during clock domain crossing.
+- **Full flag** is asserted when next write pointer equals synchronized read pointer (with MSB difference logic).
+- **Empty flag** is asserted when synchronized write pointer equals current read pointer.
+
+## 🛠️ How to Run (Icarus Verilog Example)
+
+```bash
+# Compile and run write pointer test
+iverilog -o tb_write tb/tb_write_pointer.v src/write_pointer.v src/gray_sync.v
+vvp tb_write
+
+# Compile and run read pointer test
+iverilog -o tb_read tb/tb_read_pointer.v src/read_pointer.v src/gray_sync.v
+vvp tb_read
